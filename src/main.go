@@ -105,13 +105,14 @@ func authenticateUser(repository *SQLiteRepository) {
 
 	var username = array[0]
 	var password = array[1]
+	client_ip := os.Getenv("untrusted_ip")
 
 	if len(username) <= 0 || len(password) <= 0 {
 		log.Errorf("authenticate: unable to authenticate username or password is null")
 		os.Exit(33)
 	} else {
 		log.Info("authenticate: trying to authenticate to " + config.Radius.Authentication.Server)
-		authenticationData := "Response-Packet-Type=Access-Accept,NAS-Identifier=" + config.ServerInfo.Identifier + ",NAS-Port-Type=" + config.ServerInfo.PortType + ",NAS-IP-Address=" + config.ServerInfo.IpAddress + ",Service-Type=" + config.ServerInfo.ServiceType + ",Framed-Protocol=1,User-Name=" + username + ",User-Password='" + password + "',Framed-Protocol=PPP,Message-Authenticator=0x00"
+		authenticationData := "Response-Packet-Type=Access-Accept,NAS-Identifier=" + config.ServerInfo.Identifier + ",NAS-Port-Type=" + config.ServerInfo.PortType + ",NAS-IP-Address=" + config.ServerInfo.IpAddress + ",Service-Type=" + config.ServerInfo.ServiceType + ",Framed-Protocol=1,User-Name=" + username + ",User-Password='" + password + "',Framed-Protocol=PPP,Message-Authenticator=0x00,Calling-Station-ID=" + client_ip + ",Tunnel-Client-Endpoint=" + client_ip
 
 		radClientPath := "/usr/bin/radclient"
 
